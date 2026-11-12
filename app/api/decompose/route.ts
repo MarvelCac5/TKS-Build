@@ -57,8 +57,18 @@ export async function POST(request: Request) {
       })
     }
 
-    const text = response.text ?? ''
-    const parsed: unknown = JSON.parse(text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, ''))
+    const text = response.text ?? '[]'
+    
+    // Safely parse JSON with fallback if the model text has any wrapping
+    let parsed: unknown
+    try {
+      const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
+      parsed = JSON.parse(cleaned)
+    } catch {
+      // Fallback: split text by lines if JSON parsing fails
+      parsed = text.split('\n').map(s => s.replace(/^[-*#\d.]+\s*/, '').trim()).filter(Boolean)
+    }
+
     if (!Array.isArray(parsed)) throw new Error('Unexpected model response')
     const steps = parsed.filter((step): step is string => typeof step === 'string').slice(0, 12)
     if (steps.length === 0) throw new Error('No steps generated')
