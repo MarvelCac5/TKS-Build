@@ -20,7 +20,6 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) {
-      console.error('[task-decomposer] GEMINI_API_KEY is missing.')
       return NextResponse.json({ error: 'API key is not configured on the server.' }, { status: 500 })
     }
 
@@ -29,9 +28,7 @@ export async function POST(request: Request) {
       ? `Break this step into smaller actions. Overall task: ${task}\nStep to break down: ${parentStep}\nGranularity: ${level}/5.`
       : `Break this task into steps: ${task}\nGranularity: ${level}/5.`
 
-    console.log('[task-decomposer] Fast-calling Gemini API with model:', modelName)
-
-    // Call generateContent without heavy schema restrictions for maximum speed
+    console.log('[task-decomposer] Calling active production model:', modelName)
     const response = await ai.models.generateContent({
       model: modelName,
       contents: prompt,
@@ -65,6 +62,6 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('[task-decomposer] Generation failed:', errorMessage)
-    return NextResponse.json({ error: 'That took too long or didn’t work. Try again in a moment.' }, { status: 500 })
+    return NextResponse.json({ error: 'That didn’t quite work. Try again in a moment.' }, { status: 500 })
   }
 }
