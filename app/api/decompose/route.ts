@@ -40,6 +40,7 @@ export async function POST(request: Request) {
       },
     }
 
+    console.log('[task-decomposer] Calling Gemini API with model:', modelName)
     const response = await ai.models.generateContent({
       model: modelName,
       contents: prompt,
@@ -67,8 +68,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ steps })
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    console.error('[task-decomposer] Generation failed:', errorMessage)
+    // Log the EXACT error details to your Vercel Function Logs
+    console.error('[task-decomposer] Detailed failure:', error instanceof Error ? error.stack || error.message : error)
     return NextResponse.json({ error: 'That didn’t quite work. Try again in a moment.' }, { status: 500 })
   }
 }
