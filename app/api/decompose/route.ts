@@ -1,7 +1,12 @@
-import { gateway, generateText } from 'ai'
+import { ApiError, GoogleGenAI, Type } from '@google/genai'
 import { NextResponse } from 'next/server'
 
 export const maxDuration = 30
+
+const primaryModel = 'gemini-3.8-flash'
+const fallbackModel = 'gemini-3.8-flash'
+
+const systemInstruction = `You are a kind, practical task coach for people with ADHD. Break tasks into concrete, do-able next actions. Avoid shame, urgency, streaks, and vague advice. Return ONLY valid JSON as an array of short strings, no markdown. Keep the tone warm and calm. Granularity level 1 means 3-5 broad steps; 2 means 4-6 steps; 3 means 5-8 clear steps; 4 means 7-10 smaller actions; 5 means 8-12 tiny hand-holding steps including setup actions. Each step should start with a verb and be doable in one sitting. For a recursive breakdown, make each substep specific to the parent action.`
 
 export async function POST(request: Request) {
   try {
@@ -14,16 +19,45 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Add a task (up to 1,200 characters) and choose a step size.' }, { status: 400 })
     }
 
-    const { text } = await generateText({
-      model: gateway('openai/gpt-4.1-mini'),
-      temperature: 0.6,
-      maxOutputTokens: level > 3 ? 900 : 550,
-      system: `You are a kind, practical task coach for people with ADHD. Break tasks into concrete, do-able next actions. Avoid shame, urgency, streaks, and vague advice. Return ONLY valid JSON as an array of short strings, no markdown. Keep the tone warm and calm. Granularity level 1 means 3-5 broad steps; 2 means 4-6 steps; 3 means 5-8 clear steps; 4 means 7-10 smaller actions; 5 means 8-12 tiny hand-holding steps including setup actions. Each step should start with a verb and be doable in one sitting. For a recursive breakdown, make each substep specific to the parent action.`,
-      prompt: parentStep
-        ? `Break this step into smaller actions. Overall task: ${task}\nStep to break down: ${parentStep}\nGranularity: ${level}/5.`
-        : `Break this task into steps: ${task}\nGranularity: ${level}/5.`,
-    })
+    const apiKey = process.env.GEMINI_API_KEY
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY is not set')
+    }
 
+    const ai = new GoogleGenAI({ apiKey })
+    const prompt = parentStep
+      ? `Break this step into smaller actions. Overall task: ${task}\nStep to break down: ${parentStep}\nGranularity: ${level}/5.`
+      : `Break this task into steps: ${task}\nGranularity: ${level}/5.`
+
+    const config = {
+      systemInstruction,
+      temperature: 0.6,
+      maxOutputTokens: 2048,
+      responseMimeType: 'application/json',
+      responseJsonSchema: {
+        type: Type.ARRAY,
+        items: { type: Type.STRING },
+      },
+    }
+
+    let response
+    try {
+      response = await ai.models.generateContent({
+        model: primaryModel,
+        contents: prompt,
+        config,
+      })
+    } catch (error) {
+      if (!(error instanceof ApiError) || (error.status !== 503 && error.status !== 404)) throw error
+      console.error('[task-decomposer] Primary model unavailable, falling back:', error)
+      response = await ai.models.generateContent({
+        model: fallbackModel,
+        contents: prompt,
+        config,
+      })
+    }
+
+    const text = response.text ?? ''
     const parsed: unknown = JSON.parse(text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, ''))
     if (!Array.isArray(parsed)) throw new Error('Unexpected model response')
     const steps = parsed.filter((step): step is string => typeof step === 'string').slice(0, 12)
