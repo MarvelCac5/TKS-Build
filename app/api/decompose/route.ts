@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 export const maxDuration = 30
 
-const modelName = 'gemini-3.8-flash'
+const modelName = 'gemini-3.1-flash-lite'
 
 const systemInstruction = `You are a kind, practical task coach for people with ADHD. Break tasks into concrete, do-able next actions. Avoid shame, urgency, streaks, and vague advice. Return ONLY a valid JSON array of strings, e.g. ["Step 1", "Step 2"]. No markdown formatting, no backticks, just the raw JSON array.`
 
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       ? `Break this step into smaller actions. Overall task: ${task}\nStep to break down: ${parentStep}\nGranularity: ${level}/5.`
       : `Break this task into steps: ${task}\nGranularity: ${level}/5.`
 
-    console.log('[task-decomposer] Calling active production model:', modelName)
+    console.log('[task-decomposer] Calling production model:', modelName)
     const response = await ai.models.generateContent({
       model: modelName,
       contents: prompt,
