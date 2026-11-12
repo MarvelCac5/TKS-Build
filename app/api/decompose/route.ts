@@ -1,11 +1,11 @@
-import { GoogleGenAI, Type } from '@google/genai'
+import { GoogleGenAI } from '@google/genai'
 import { NextResponse } from 'next/server'
 
 export const maxDuration = 30
 
 const modelName = 'gemini-3.8-flash'
 
-const systemInstruction = `You are a kind, practical task coach for people with ADHD. Break tasks into concrete, do-able next actions. Avoid shame, urgency, streaks, and vague advice. Return ONLY valid JSON as an array of short strings, no markdown. Keep the tone warm and calm. Granularity level 1 means 3-5 broad steps; 2 means 4-6 steps; 3 means 5-8 clear steps; 4 means 7-10 smaller actions; 5 means 8-12 tiny hand-holding steps including setup actions. Each step should start with a verb and be doable in one sitting. For a recursive breakdown, make each substep specific to the parent action.`
+const systemInstruction = `You are a kind, practical task coach for people with ADHD. Break tasks into concrete, do-able next actions. Avoid shame, urgency, streaks, and vague advice. Return ONLY a valid JSON array of strings, e.g. ["Step 1", "Step 2"]. No markdown formatting, no backticks, just the raw JSON array.`
 
 export async function POST(request: Request) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) {
-      console.error('[task-decomposer] GEMINI_API_KEY is missing from environment variables.')
+      console.error('[task-decomposer] GEMINI_API_KEY is missing.')
       return NextResponse.json({ error: 'API key is not configured on the server.' }, { status: 500 })
     }
 
@@ -29,22 +29,17 @@ export async function POST(request: Request) {
       ? `Break this step into smaller actions. Overall task: ${task}\nStep to break down: ${parentStep}\nGranularity: ${level}/5.`
       : `Break this task into steps: ${task}\nGranularity: ${level}/5.`
 
-    const config = {
-      systemInstruction,
-      temperature: 0.6,
-      maxOutputTokens: 2048,
-      responseMimeType: 'application/json',
-      responseJsonSchema: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
-      },
-    }
+    console.log('[task-decomposer] Fast-calling Gemini API with model:', modelName)
 
-    console.log('[task-decomposer] Calling Gemini API with model:', modelName)
+    // Call generateContent without heavy schema restrictions for maximum speed
     const response = await ai.models.generateContent({
       model: modelName,
       contents: prompt,
-      config,
+      config: {
+        systemInstruction,
+        temperature: 0.5,
+        maxOutputTokens: 1024,
+      },
     })
 
     const text = response.text ?? '[]'
@@ -68,8 +63,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ steps })
   } catch (error: unknown) {
-    // Log the EXACT error details to your Vercel Function Logs
-    console.error('[task-decomposer] Detailed failure:', error instanceof Error ? error.stack || error.message : error)
-    return NextResponse.json({ error: 'That didn’t quite work. Try again in a moment.' }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error('[task-decomposer] Generation failed:', errorMessage)
+    return NextResponse.json({ error: 'That took too long or didn’t work. Try again in a moment.' }, { status: 500 })
   }
 }
