@@ -208,3 +208,142 @@ h1 > span:first-of-type { display: inline-block; padding: 0 16px 7px; border: 3p
 @media (max-width: 800px) { .app-shell { width: min(100% - 40px, 620px); }.main-layout { grid-template-columns: 1fr; gap: 32px; margin: 40px auto 46px; }.intro-column { padding-top: 0; }.intro-column h1 { font-size: clamp(50px, 13vw, 68px); }.title-sparkle { left: min(250px, 57vw); }.side-quote, .doodle { display: none; }.intro-copy { margin-top: 15px; }.tiny-note { margin-top: 13px; }.composer-card { padding: 23px 22px 17px; }.parking-lot { width: calc(100vw - 32px); } }
 @media (max-width: 480px) { .app-shell { width: calc(100% - 28px); }.topbar { height: 64px; }.top-note { display: none; }.kindness-chip { padding: 8px 10px; font-size: 10px; }.main-layout { margin-top: 29px; gap: 25px; }.intro-column h1 { margin-top: 20px; letter-spacing: -3px; }.intro-copy { font-size: 14px; }.composer-card { padding: 20px 16px 15px; border-radius: 20px; }.card-topline h2 { font-size: 20px; }.task-input { height: 100px; font-size: 12px; }.granularity { padding: 13px 12px 11px; }.level-captions { font-size: 9px; }.step-card { gap: 7px; padding: 9px; }.step-text { font-size: 11px; }.smaller-button { padding: 7px; }.smaller-button span { display: inline; }.depth-1 { margin-left: 14px; }.parking-toggle { padding: 13px 13px; gap: 10px; }.parking-icon { flex-basis: 34px; width: 34px; height: 34px; }.parking-heading strong { font-size: 12px; }.parking-heading > span { font-size: 9px; }.parking-toggle-label { font-size: 9px; gap: 3px; }.parking-content { padding: 0 13px 14px; }.footer { font-size: 9px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+
+/* Soft top-down visual treatment */
+:root {
+  --background: #fffdf8;
+  --foreground: #2b2a43;
+  --card: #ffffff;
+  --card-foreground: #2b2a43;
+  --primary: #df7f9e;
+  --primary-foreground: #ffffff;
+  --secondary: #e6f4f1;
+  --secondary-foreground: #37666a;
+  --muted: #f5f2ec;
+  --muted-foreground: #8e899d;
+  --accent: #f5d978;
+  --accent-foreground: #443b2b;
+  --border: #e9e5ed;
+  --input: #e9e5ed;
+  --ring: #85bfc0;
+  --ink: #2b2a43;
+  --soft-ink: #706b82;
+  --teal: #6daeb6;
+  --teal-deep: #548e97;
+}
+
+body { background: var(--background); background-image: none; }
+button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid #9bcfd0; outline-offset: 3px; }
+.app-shell { width: min(100% - 40px, 760px); padding-bottom: 112px; }
+.topbar { height: 76px; border-bottom: 1px solid #eeeaf0; }
+.brand-mark { border: 0; color: white; background: var(--teal); box-shadow: none; }
+.top-note { color: #888398; }
+.online-dot { background: #74c99e; box-shadow: 0 0 0 4px #e7f6eb; }
+.kindness-chip { padding: 9px 13px; border: 1px solid #eae6ef; background: #fff; box-shadow: none; color: #766d88; font-size: 12px; font-weight: 700; }
+.kindness-chip:hover:not(:disabled) { box-shadow: 0 5px 14px #31234d12; border-color: #eae6ef; }
+.main-layout { max-width: 760px; margin: 46px auto 70px; }
+.intro-column { padding-top: 0; }
+.eyebrow { padding: 7px 11px 7px 7px; border: 1px solid #eae5f2; background: #fff; color: #716985; box-shadow: none; font-weight: 700; }
+.eyebrow-icon { color: #5d9da2; background: #e6f4f1; }
+h1 { margin-top: 27px; font: 900 clamp(52px, 8vw, 76px)/.99 'Nunito', sans-serif; letter-spacing: -4px; }
+h1 > span:first-of-type { display: inline; padding: 0; border: 0; border-radius: 0; color: var(--primary); background: transparent; box-shadow: none; transform: none; }
+.title-sparkle { top: -12px; left: calc(50% + 105px); color: #e7af4e; }
+.intro-copy { margin-top: 23px; color: #777287; font-size: 16px; line-height: 1.75; font-weight: 500; }
+.intro-copy em { color: #6c5b9e; font-weight: 800; }
+.tiny-note { margin-top: 22px; color: #827c91; font-weight: 600; }
+.note-emoji { color: #6daeb6; background: #e6f4f1; }
+.doodle { margin: 25px auto 10px; color: #b9d8d4; }
+.doodle-star { color: #e7af4e; }
+.doodle-line { border-color: #b9d8d4; }
+.doodle-heart { color: #df7f9e; }
+.side-quote { display: block; margin: 0 auto; max-width: 330px; padding: 19px 21px 17px 28px; border: 1px solid #efebf4; border-radius: 17px 17px 17px 5px; background: #fff; box-shadow: 0 5px 17px #3e325009; text-align: left; }
+.side-quote p { color: #777287; font-size: 12px; font-weight: 600; line-height: 1.65; }
+.quote-mark { color: #c8bde9; }
+.quote-credit { color: #a7a1b1; }
+.composer-card { padding: 26px 28px 18px; margin-top: 34px; border: 1.5px solid #e9e4f0; border-radius: 24px; background: #fff; box-shadow: 0 10px 34px #32254b0b; }
+.section-kicker { color: #9a91ad; }
+.card-illustration { border: 0; background: #fff5d8; color: #c69535; }
+.task-input { height: 110px; min-height: 84px; padding: 15px; border: 1px solid #e9e5ee; border-radius: 14px; background: #fdfcfe; color: var(--ink); font-size: 13px; }
+.task-input::placeholder { color: #aaa5b2; }
+.task-input:focus { border-color: #a99bea; box-shadow: 0 0 0 3px #8c78dc1b; }
+.input-footer { margin: 8px 2px 22px; color: #aaa5b2; }
+.granularity { padding: 16px 16px 13px; border: 0; border-radius: 17px; background: #f7f4ff; }
+.granularity-icon { border: 0; background: #e6f4f1; color: #5d9da2; }
+.granularity-heading strong { color: #4a4361; font-size: 11px; font-weight: 800; }
+.granularity-heading div > span { color: #a29bae; }
+.level-slider { height: 10px; border: 0; background: linear-gradient(to right, #a9dcd3 0%, var(--accent) 50%, #e9a3bc 100%); }
+.level-slider::-webkit-slider-thumb { width: 26px; height: 26px; border: 3px solid #fff; background: #fff; box-shadow: 0 2px 8px #6d596c46, 0 0 0 1px #6d596c33; }
+.level-slider:hover::-webkit-slider-thumb { box-shadow: 0 4px 12px #6d596c42, 0 0 0 6px #df7f9e18; }
+.level-slider::-moz-range-thumb { width: 22px; height: 22px; border: 3px solid #fff; background: #fff; box-shadow: 0 2px 8px #6d596c46; }
+.slider-row .slider-value { top: -25px; width: 24px; height: 24px; border: 0; background: var(--primary); color: #fff; box-shadow: none; }
+.level-captions { color: #aaa4b3; font-size: 9px; font-weight: 600; }
+.level-caption-end { color: #a29bae; }
+.unstuck-button { height: 51px; margin-top: 17px; border: 0; border-radius: 15px; background: var(--teal); box-shadow: 0 4px 0 var(--teal-deep); color: white; font: 900 14px 'Nunito', sans-serif; }
+.unstuck-button:hover:not(:disabled) { box-shadow: 0 6px 0 var(--teal-deep); background: #62a5ad; }
+.unstuck-button:active:not(:disabled) { box-shadow: 0 1px 0 var(--teal-deep); }
+.privacy-note { color: #a8a2b0; }
+.privacy-note svg { color: #e99bad; }
+.loading-card, .feedback-message { border: 1px solid #eae4f8; border-radius: 16px; background: #f8f6ff; box-shadow: none; }
+.loading-bubble { border: 0; background: #e6f4f1; color: #5d9da2; }
+.loading-card strong { color: #554985; }
+.loading-card div > span { color: #9c96ac; }
+.loading-dots i { background: #a494e9; }
+.feedback-message { color: #655c76; font-size: 12px; font-weight: 400; }
+.feedback-message button { color: #8b829a; }
+.results-section { margin-top: 34px; }
+.results-heading p { color: #9993a4; font-weight: 600; }
+.reset-button { width: 34px; height: 34px; border: 1px solid #ebe7ef; border-radius: 11px; color: #8f879c; box-shadow: none; }
+.reset-button:hover:not(:disabled) { color: #6757bd; background: #f6f3ff; box-shadow: none; }
+.progress-track { height: 6px; margin: 16px 0; border: 0; background: #eeeaf4; }
+.progress-track span { background: #83c9a3; }
+.step-card { gap: 10px; min-height: 63px; padding: 10px 12px; border: 1px solid #e8e4ef; border-radius: 16px; box-shadow: 0 3px 0 #eae6ee; }
+.step-card:hover { box-shadow: 0 5px 0 #eae6ee; }
+.step-card.lemon { background: #fffdf3; }.step-card.pink { background: #fff8fa; }.step-card.lilac { background: #f5fcf7; }
+.step-card.is-done .step-text { color: #8d899a; }
+.check-button { flex-basis: 25px; width: 25px; height: 25px; border: 1.5px solid #d4cedf; border-radius: 8px; }
+.check-button:hover:not(:disabled) { border-color: #8dbbc0; background: #fff; }
+.is-done .check-button { border-color: #75bd94; background: #75bd94; }
+.step-number { color: #aaa4b3; font: 800 10px 'Nunito', sans-serif; }
+.step-text { color: #4f4a61; font-size: 12px; font-weight: 700; }
+.smaller-button { gap: 5px; padding: 7px 9px; border: 1px solid #e9e4f3; border-radius: 9px; color: #7663c9; background: white; box-shadow: none; font-size: 9px; font-weight: 800; }
+.smaller-button:hover:not(:disabled) { background: #f3efff; box-shadow: none; }
+.depth-1 { border-left: 2px dashed #d8d0f1; }
+.parking-lot { width: min(760px, calc(100vw - 48px)); margin-bottom: 14px; border: 1px solid #e8e3ef; border-radius: 19px; background: #fff; box-shadow: 0 5px 17px #32254b08; }
+.parking-lot-viewport:not(.open) .parking-lot:hover { box-shadow: 0 9px 24px #32254b12; }
+.parking-icon { border: 0; background: #fff2d4; color: #b07d16; }
+.parking-heading strong { color: #4b455e; }.parking-heading > span { color: #a09aaa; font-weight: 400; }
+.parking-toggle-label { color: #7663c9; font-weight: 800; }
+.parking-prompt { color: #837d90; }.parking-prompt svg { color: #d4a74c; }
+.parking-content textarea { border: 1px solid #e9e5ee; background: #fdfcfe; }.parking-content textarea::placeholder { color: #aaa5b2; }.parking-content textarea:focus { border-color: #a99bea; box-shadow: none; }
+.parking-footer { color: #a59eae; }
+.footer { border-top: 1px solid #eeeaf0; color: #aaa4b1; }
+
+@media (max-width: 800px) {
+  .app-shell { width: min(100% - 40px, 620px); }
+  .main-layout { margin: 40px auto 46px; }
+  .side-quote, .doodle { display: none; }
+  .composer-card { padding: 23px 22px 17px; }
+}
+@media (max-width: 480px) {
+  .app-shell { width: calc(100% - 28px); }
+  .topbar { height: 64px; }
+  .kindness-chip { padding: 8px 10px; font-size: 10px; }
+  .main-layout { margin-top: 29px; }
+  .intro-column h1 { margin-top: 20px; letter-spacing: -3px; }
+  .intro-copy { font-size: 14px; }
+  .composer-card { padding: 20px 16px 15px; border-radius: 20px; }
+  .card-topline h2 { font-size: 20px; }
+  .task-input { height: 100px; font-size: 12px; }
+  .granularity { padding: 13px 12px 11px; }
+  .step-card { gap: 7px; padding: 9px; }
+  .step-text { font-size: 11px; }
+  .smaller-button { padding: 7px; }
+  .depth-1 { margin-left: 14px; }
+  .parking-toggle { padding: 14px 13px; gap: 10px; }
+  .parking-icon { flex-basis: 34px; width: 34px; height: 34px; }
+  .parking-heading strong { font-size: 12px; }
+  .parking-heading > span { font-size: 9px; }
+  .parking-toggle-label { font-size: 9px; gap: 3px; }
+  .parking-content { padding: 0 13px 14px; }
+  .footer { font-size: 9px; }
+}
