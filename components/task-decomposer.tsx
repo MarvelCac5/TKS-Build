@@ -5,8 +5,8 @@ import { ArrowDown, Brain, Check, ChevronDown, ChevronUp, Heart, Lightbulb, Rota
 import { fallbackQuote, fetchRandomQuote, type Quote } from '@/lib/supabase-client'
 
 type TaskStep = { id: string; text: string; done: boolean; children?: TaskStep[]; busy?: boolean }
-type Palette = 'mist' | 'sky' | 'sea' | 'pearl' | 'dusk'
-const palette: Palette[] = ['mist', 'sky', 'sea', 'pearl', 'dusk']
+type Palette = 'lemon' | 'pink' | 'lilac'
+const palette: Palette[] = ['lemon', 'pink', 'lilac']
 const loadingLines = ['Untangling the chaos…', 'Finding the first tiny step…', 'Juggling your thoughts…']
 const levelNames = ['Big picture', 'Rough sketch', 'Balanced bits', 'Small moves', '“Open laptop” tiny']
 
@@ -95,7 +95,7 @@ export function TaskDecomposer() {
           <span className="step-number">{String(index + 1).padStart(2, '0')}</span>
           <span className="step-text">{step.text}</span>
           <button className="smaller-button tactile" type="button" disabled={busy} onClick={() => decompose(step.text)} aria-label={`Break down: ${step.text}`}>
-            <WandSparkles size={15} /><span>Smaller</span>
+            <WandSparkles size={15} /><span>Break it down smaller</span>
           </button>
         </article>
         {step.children && renderSteps(step.children, depth + 1)}
@@ -129,7 +129,7 @@ export function TaskDecomposer() {
           <textarea id="task-input" className="task-input" maxLength={1200} value={task} onChange={(event) => setTask(event.target.value)} placeholder="e.g., Write my APUSH essay, clean my room, reply to that email…" />
           <div className="input-footer"><span>It can be messy. We&apos;re not judging. <span aria-hidden="true">☺</span></span><span>{task.length}/1200</span></div>
           <div className="granularity">
-            <div className="granularity-heading"><span className="granularity-icon"><SlidersHorizontal size={16} /></span><div><strong>How tiny should we go?</strong><span>Slide to your kind of help</span></div></div>
+            <div className="granularity-heading"><span className="granularity-icon"><SlidersHorizontal size={16} /></span><div><strong>How spicy should the steps be?</strong><span>Slide to your kind of help</span></div></div>
             <div className="slider-row">
               <input
                 type="range" min={1} max={5} step={1} value={level}
@@ -140,7 +140,7 @@ export function TaskDecomposer() {
               />
               <span className="slider-value" aria-hidden="true">{level}</span>
             </div>
-            <div className="level-captions"><span>{levelNames[level - 1]}</span><span className="level-caption-end">{level === 5 ? '★' : ''}</span></div>
+            <div className="level-captions"><span>{levelNames[level - 1]}</span><span className="level-caption-end">{level === 5 ? 'Open the laptop' : 'Tiny steps'}</span></div>
           </div>
           <button className="unstuck-button tactile" type="button" onClick={() => decompose()} disabled={!task.trim() || busy}>
             {busy ? <><span className="button-spinner" /> Working on it…</> : <>Un-stuck me! <Sparkles size={18} /></>}
@@ -148,7 +148,7 @@ export function TaskDecomposer() {
           <p className="privacy-note"><Heart size={12} /> Just you and your thoughts. No pressure, ever.</p>
         </div>
 
-        {message && <div className="feedback-message pop-in" role="status" ref={messageRef}><span>💙</span>{message}<button type="button" onClick={() => setMessage('')} aria-label="Dismiss">×</button></div>}
+        {message && <div className="feedback-message pop-in" role="status" ref={messageRef}><span>✦</span>{message}<button type="button" onClick={() => setMessage('')} aria-label="Dismiss">×</button></div>}
 
         {busy && <div className="loading-card" role="status"><span className="loading-bubble">✦</span><div><strong>{loadingLines[loadingIndex]}</strong><span>We&apos;re making it feel a little more manageable.</span></div><span className="loading-dots"><i /><i /><i /></span></div>}
 
